@@ -36,3 +36,15 @@ export default App;
 ```
 
 /node_modules/cesium/Build/Cesium을 /public/cesium 디렉토리 생성후 내용 만 붙여넣기
+
+.env 생성 후 API 키 저장
+REACT 환경변수 : REACT_APP_{key 이름}
+const 키 변수 = process.env.REACT_APP_{key 이름}
+VITE 환경변수 : VITE_{key 이름}
+const 키 변수 = import.meta.env.VITE_{key 이름}
+
+.gitignore에 아래의 내용 추가
+```
+.env
+.env.*
+```
