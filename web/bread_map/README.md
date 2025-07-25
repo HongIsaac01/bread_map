@@ -1,12 +1,50 @@
-# React + Vite
+# bread_map
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+참고자료 : 세상의 맛있는 빵도감 - 이노우에 요시후미 감수 / 진선 books
+https://velog.io/@c9926/CesiumJS-3D
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+npm create vite@latest bread_map -- --template react
+cd bread_map
+npm install
+npm run dev
 
-## Expanding the ESLint configuration
+npm install cesium
+npm install @types/cesium
+npm install resium
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+npm run dev
+
+index.html 추가>
+<script>window.CESIUM_BASE_URL = '/cesium';</script> 
+
+App.jsx 변경>
+```
+import React from 'react';
+import { Viewer } from 'resium';
+import 'cesium/Build/Cesium/Widgets/widgets.css';
+import { Ion, IonResource } from 'cesium';
+Ion.defaultAccessToken = 'YOUR_CESIUM_ION_ACCESS_TOKEN';
+function App() {
+  return (
+    <div style={{ width: '100%', height: '100vh' }}>
+      <Viewer full />
+    </div>
+  );
+}
+export default App;
+```
+
+/node_modules/cesium/Build/Cesium을 /public/cesium 디렉토리 생성후 내용 만 붙여넣기
+
+.env 생성 후 API 키 저장
+REACT 환경변수 : REACT_APP_{key 이름}
+const 키 변수 = process.env.REACT_APP_{key 이름}
+VITE 환경변수 : VITE_{key 이름}
+const 키 변수 = import.meta.env.VITE_{key 이름}
+
+.gitignore에 아래의 내용 추가
+```
+.env
+.env.*
+```
