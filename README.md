@@ -18,6 +18,7 @@ npm install
 //3D 지구본 시각화 라이브러리 (three-globe 기반)
 //d3-scale, d3-scale-chromatic: 색상 스케일용 라이브러리
 npm install react-globe.gl three d3-scale d3-scale-chromatic
+//템플릿 엔진 라이브러리(HTML 템플릿)
 npm install handlebars
 
 

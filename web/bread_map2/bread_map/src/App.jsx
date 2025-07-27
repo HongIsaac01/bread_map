@@ -7,16 +7,15 @@ import { interpolateYlOrRd } from "d3-scale-chromatic";
 function App() {
   const [countries, setCountries] = useState({ features: [] });
   const [hoverD, setHoverD] = useState(null);
-  const [compileTemplate, setCompileTemplate] = useState(null); // 컴파일된 템플릿 저장
+  const [selectedD, setSelectedD] = useState(null); // 선택된 나라 저장
+  const [compileTemplate, setCompileTemplate] = useState(null);
 
-  // 1. GeoJSON 로드
   useEffect(() => {
     fetch("../datasets/ne_110m_admin_0_countries.geojson")
       .then((res) => res.json())
       .then(setCountries);
   }, []);
 
-  // 2. 템플릿 HTML 로드 후 Handlebars 컴파일
   useEffect(() => {
     fetch("/label.html")
       .then((res) => res.text())
@@ -27,7 +26,6 @@ function App() {
       .catch(console.error);
   }, []);
 
-  // 3. 색상 계산용
   const colorScale = scaleSequentialSqrt(interpolateYlOrRd);
   const getVal = (feat) =>
     feat.properties.GDP_MD_EST / Math.max(1e5, feat.properties.POP_EST);
@@ -37,11 +35,22 @@ function App() {
   );
   colorScale.domain([0, maxVal]);
 
-  // 4. 폴리곤 라벨 렌더링 함수
   const renderLabel = ({ properties: d }) => {
     if (!compileTemplate) return "";
-    return compileTemplate(d); // 템플릿 엔진으로 렌더링
+    return compileTemplate(d);
   };
+
+  // 클릭 시 동작: 클릭한 나라가 선택되어 있으면 해제, 아니면 선택
+  const onPolygonClick = (d) => {
+    if (selectedD === d) {
+      setSelectedD(null);
+    } else {
+      setSelectedD(d);
+    }
+  };
+
+  // hover나 선택된 나라가 맞으면 강조
+  const isActive = (d) => d === hoverD || d === selectedD;
 
   return (
     <Globe
@@ -49,12 +58,14 @@ function App() {
       backgroundImageUrl="//cdn.jsdelivr.net/npm/three-globe/example/img/night-sky.png"
       lineHoverPrecision={0}
       polygonsData={countries.features.filter((d) => d.properties.ISO_A2 !== "AQ")}
-      polygonAltitude={(d) => (d === hoverD ? 0.12 : 0.06)}
-      polygonCapColor={(d) => (d === hoverD ? "#00c8ff" : "#888")}
+      polygonAltitude={(d) => (isActive(d) ? 0.12 : 0.06)}
+      polygonCapColor={(d) => (isActive(d) ? "#00c8ff" : "#888")}
       polygonSideColor={() => "rgba(255, 0, 0, 0.15)"}
       polygonStrokeColor={() => "rgba(0, 0, 255, 0.15)"}
       polygonLabel={renderLabel}
+
       onPolygonHover={setHoverD}
+      onPolygonClick={onPolygonClick}
       polygonsTransitionDuration={300}
     />
   );
